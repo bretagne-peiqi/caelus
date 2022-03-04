@@ -7,6 +7,7 @@ set -o nounset
 BASE_DIR=$(cd $(dirname $0)/.. && pwd)
 source "${BASE_DIR}/hack/common.sh"
 source "${BASE_DIR}/hack/lib/version.sh"
+export GOPROXY="https://goproxy.io"
 
 go build -o ${OUTPUT_PATH}/bin/${PACKAGE_NAME} \
   -ldflags "$(api::version::ldflags)" \

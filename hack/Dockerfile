@@ -1,13 +1,14 @@
 # Build the manager binary
 FROM golang:1.16 as builder
 
+ENV GOPROXY=https://goproxy.io
 WORKDIR /workspace
 # Copy the Go Modules manifests
 COPY go.mod go.mod
 COPY go.sum go.sum
 # cache deps before building and copying source so that we don't need to re-download as much
 # and so that source changes don't invalidate our downloaded layer
-RUN go mod download
+RUN GOPROXY="https://goproxy.io" go mod download
 
 # Copy the go source
 COPY cmd/ cmd/
@@ -20,14 +21,12 @@ COPY .git/ .git/
 RUN mkdir -p binaries
 
 # Build caelus
-RUN hack/build.sh && \
+RUN GOPROXY="https://goproxy.io" hack/build.sh && \
     cp _output/bin/* /workspace/binaries/
 
 # Build lighthouse
-RUN cd /workspace/contrib/lighthouse && \
-    ./hack/binary && \
-    cp _output/bin/* /workspace/binaries/
-RUN cd /workspace/contrib/lighthouse-plugin && \
+RUN GOPROXY="https://goproxy.io" cd /workspace/contrib/lighthouse && ./hack/binary && cp _output/bin/* /workspace/binaries
+RUN GOPROXY="https://goproxy.io" cd /workspace/contrib/lighthouse-plugin && \
     ./hack/binary && \
     cp _output/bin/* /workspace/binaries/
 
